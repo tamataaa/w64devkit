@@ -1,0 +1,119 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+struct Node {
+    string namaAlat;
+    string tanggalRusak;
+    string kodeRuangan;
+    Node* next;
+};
+
+Node* head = nullptr;
+
+void tambahAlat(string nama, string tanggal, string kode) {
+    Node* newNode = new Node{nama, tanggal, kode, nullptr};
+    if (!head) {
+        head = newNode;
+    } else {
+        Node* current = head;
+        while (current->next) {
+            current = current->next;
+        }
+        current->next = newNode;
+    }
+    cout << "Alat \"" << nama << "\" berhasil ditambahkan ke antrian.\n";
+}
+
+void hapusAlat() {
+    if (!head) {
+        cout << "Antrian kosong.\n";
+        return;
+    }
+    Node* temp = head;
+    head = head->next;
+    cout << "Alat \"" << temp->namaAlat << "\" telah diperbaiki dan dihapus.\n";
+    delete temp;
+}
+
+void cariAlat(string kode) {
+    Node* current = head;
+    bool ditemukan = false;
+    while (current) {
+        if (current->kodeRuangan == kode) {
+            cout << "- Nama Alat: " << current->namaAlat
+                 << ", Tanggal Rusak: " << current->tanggalRusak
+                 << ", Kode Ruangan: " << current->kodeRuangan << endl;
+            ditemukan = true;
+        }
+        current = current->next;
+    }
+    if (!ditemukan) {
+        cout << "Tidak ditemukan alat dengan kode ruangan \"" << kode << "\".\n";
+    }
+}
+
+void tampilkanAntrian() {
+    if (!head) {
+        cout << "Antrian kosong.\n";
+        return;
+    }
+    Node* current = head;
+    cout << "\nDaftar Antrian Alat Rusak:\n";
+    while (current) {
+        cout << "- " << current->namaAlat << ", " << current->tanggalRusak << ", " << current->kodeRuangan << endl;
+        current = current->next;
+    }
+}
+
+void menu() {
+    cout << "\n=== Sistem Antrian Perbaikan Alat ===\n";
+    cout << "1. Tambah alat rusak\n";
+    cout << "2. Hapus alat yang sudah diperbaiki\n";
+    cout << "3. Cari alat berdasarkan kode ruangan\n";
+    cout << "4. Tampilkan seluruh antrian\n";
+    cout << "5. Keluar\n";
+    cout << "Pilih menu: ";
+}
+
+int main() {
+    int pilihan;
+    string nama, tanggal, kode;
+
+    do {
+        menu();
+        cin >> pilihan;
+        cin.ignore(); // Membersihkan buffer newline
+
+        switch (pilihan) {
+            case 1:
+                cout << "Masukkan nama alat: ";
+                getline(cin, nama);
+                cout << "Masukkan tanggal rusak (DD-MM-YYYY): ";
+                getline(cin, tanggal);
+                cout << "Masukkan kode ruangan: ";
+                getline(cin, kode);
+                tambahAlat(nama, tanggal, kode);
+                break;
+            case 2:
+                hapusAlat();
+                break;
+            case 3:
+                cout << "Masukkan kode ruangan: ";
+                getline(cin, kode);
+                cariAlat(kode);
+                break;
+            case 4:
+                tampilkanAntrian();
+                break;
+            case 5:
+                cout << "Keluar dari program.\n";
+                break;
+            default:
+                cout << "Pilihan tidak valid.\n";
+        }
+
+    } while (pilihan != 5);
+
+    return 0;
+}
